@@ -3,8 +3,6 @@ using MyContactsFullStack.Api;
 using MyContactsFullStack.Model;
 
 /*
-Pause 11:05
-
 1: Introdusere Dependency Injection-motor - dummy-eksempel
   - AddTransient
   - AddScoped
@@ -40,6 +38,10 @@ app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.CreatePeopleEndpoints();
+app.UseExceptionHandler(exceptionHandlerApp
+    => exceptionHandlerApp.Run(async context
+        => await Results.Problem()
+            .ExecuteAsync(context)));
 app.Run();
 
 /*

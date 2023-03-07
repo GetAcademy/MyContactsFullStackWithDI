@@ -8,35 +8,72 @@ namespace MyContactsFullStack.Api
         public static void CreatePeopleEndpoints(this WebApplication app)
         {
             app.MapGet("/people", GetAll);
-            app.MapGet("/people/{id}",GetById);
-            app.MapDelete("/people/{id}",Delete);
+            app.MapGet("/people/{id}", GetById);
+            app.MapDelete("/people/{id}", Delete);
             app.MapPost("/people", Create);
             app.MapPut("/people", Update);
         }
 
-        private static Task<IEnumerable<Person>> GetAll(PersonRepository personRepository)
+        private static async Task<IResult> GetAll(PersonRepository personRepository)
         {
-            return personRepository.ReadAll();
+            try
+            {
+                return Results.Ok(await personRepository.ReadAll());
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem(ex.Message);
+            }
         }
 
-        private static Task<Person> GetById(Guid id, PersonRepository personRepository)
+        private static async Task<IResult> GetById(Guid id, PersonRepository personRepository)
         {
-            return personRepository.ReadById(id);
+            try
+            {
+                var person = await personRepository.ReadById(id);
+                if (person == null) return Results.NotFound();
+                return Results.Ok(person);
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem(ex.Message);
+            }
         }
 
-        private static Task<int> Create(Person person, PersonRepository personRepository)
+        private static async Task<IResult> Create(Person person, PersonRepository personRepository)
         {
-            return personRepository.Create(person);
+            try
+            {
+                return Results.Ok(personRepository.Create(person));
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem(ex.Message);
+            }
         }
 
-        private static Task<int> Update(Person person, PersonRepository personRepository)
+        private static async Task<IResult> Update(Person person, PersonRepository personRepository)
         {
-            return personRepository.Update(person);
+            try
+            {
+                return Results.Ok(personRepository.Update(person));
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem(ex.Message);
+            }
         }
 
-        private static Task<int> Delete(Guid id, PersonRepository personRepository)
+        private static async Task<IResult> Delete(Guid id, PersonRepository personRepository)
         {
-            return personRepository.Delete(id);
+            try
+            {
+                return Results.Ok(personRepository.Delete(id));
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem(ex.Message);
+            }
         }
     }
 }
