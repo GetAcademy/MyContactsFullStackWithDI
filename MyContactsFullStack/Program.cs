@@ -3,6 +3,8 @@ using MyContactsFullStack.Model;
 
 /*
 
+Pause til 10:32
+
 1: Introdusere Dependency Injection-motor - dummy-eksempel
   - AddTransient
   - AddScoped
@@ -14,14 +16,21 @@ using MyContactsFullStack.Model;
   - singleton
 4: Innføre DI for PersonRepository
 5: Flytte mapping til egen klasse - extension metode WebApplication
+  - beholde lambda-uttrykk
+  - som metoder
   - med og uten IResult 
 6: Eventuelt flytte ut kjerne-kode til eget prosjekt
 
  */
 
+//var exampleSingleton = ExampleSingleton.Instance;
+
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+var services = builder.Services;
+services.AddScoped<ISomethingElse, MySomethingElse>();
+services.AddScoped<ISimpleLogger, MySimpleLogger>();
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
 var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -33,6 +42,7 @@ const string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Cat
 
 app.MapGet("/people", () =>
 {
+    //logger.Log("GET /people");
     var personRepository = new PersonRepository(connectionString);
     return personRepository.ReadAll();
 });
