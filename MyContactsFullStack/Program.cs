@@ -1,9 +1,9 @@
 using MyContactsFullStack;
+using MyContactsFullStack.Api;
 using MyContactsFullStack.Model;
 
 /*
-
-Pause til 10:32
+Pause 11:05
 
 1: Introdusere Dependency Injection-motor - dummy-eksempel
   - AddTransient
@@ -27,8 +27,11 @@ Pause til 10:32
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
-services.AddScoped<ISomethingElse, MySomethingElse>();
-services.AddScoped<ISimpleLogger, MySimpleLogger>();
+var connectionString = builder.Configuration.GetConnectionString("MyDb");
+services.AddSingleton(new MySqlConnectionFactory(connectionString));
+services.AddScoped<PersonRepository>();
+//services.AddScoped<ISomethingElse, MySomethingElse>();
+//services.AddScoped<ISimpleLogger, MySimpleLogger>();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 var app = builder.Build();
@@ -36,38 +39,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI();
-
-
-const string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=MyContacts;Integrated Security=True";
-
-app.MapGet("/people", () =>
-{
-    //logger.Log("GET /people");
-    var personRepository = new PersonRepository(connectionString);
-    return personRepository.ReadAll();
-});
-app.MapGet("/people/{id}", (Guid id) =>
-{
-    var personRepository = new PersonRepository(connectionString);
-    return personRepository.ReadById(id);
-});
-app.MapDelete("/people/{id}", (Guid id) =>
-{
-    var personRepository = new PersonRepository(connectionString);
-    personRepository.Delete(id);
-});
-app.MapPost("/people", (Person person) =>
-{
-    var personRepository = new PersonRepository(connectionString);
-    personRepository.Create(person);
-});
-app.MapPut("/people", (Person person) =>
-{
-    var personRepository = new PersonRepository(connectionString);
-    personRepository.Update(person);
-});
-
-
+app.CreatePeopleEndpoints();
 app.Run();
 
 /*
