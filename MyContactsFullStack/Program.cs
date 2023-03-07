@@ -1,6 +1,24 @@
 using MyContactsFullStack;
 using MyContactsFullStack.Model;
 
+/*
+
+1: Introdusere Dependency Injection-motor - dummy-eksempel
+  - AddTransient
+  - AddScoped
+  - AddSingleton
+2: Skulle gjerne gjort dette med PersonRepository, men den trenger ConnectionString
+3: ConnectionString
+  - config fil 
+  - factory
+  - singleton
+4: Innføre DI for PersonRepository
+5: Flytte mapping til egen klasse - extension metode WebApplication
+  - med og uten IResult 
+6: Eventuelt flytte ut kjerne-kode til eget prosjekt
+
+ */
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
